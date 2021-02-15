@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="taskkeeper.css">
+</head>
+<body onload="startTime(),showprofile()">
+
+    <div class="navbar">
+        <a class="active" href="taskkeeper_dashboard.html">Home</a> 
+        <a href="taskkeeper_profile.html">Profile</a>
+        <a id="txt"></a>
+        <div class="logout-right">
+          <a href="#" onclick="logout()">Logout</a>
+        </div>
+        </div>
+
+    <div class="login">
+        <form name='form-login'>
+    
+            <h1>Update user details</h1>
+    
+            <label for="name">Email</label>
+            <input type="email" id="email" placeholder="enter your email" required>
+
+            <label for="name">UserName</label>
+            <input type="name" id="username" placeholder="Username" required>
+
+            <label for="phone">mobile number:</label>
+            <input type="tel" id="phone" name="phonenumber" required maxlength="10">
+
+            <label for="birthday">Date Of Birth:</label>
+            <input type="date" id="birthday" name="birthday" required>
+
+    
+            <label for="pw" class="password" >Password</label>
+            <input type="text" id= "pw"  placeholder="Password" required>
+        
+        
+            <input id="rgstr_btn" type="button" value="Update" onclick="update()">
+
+
+    
+    
+    
+        </form>
+    </div> 
+
+  
+  <!-- <div id="txt"></div> -->
+  
+  
+<script>
+function logout() {
+  document.cookie = "email=;expires=Thu, 01 Jan 1970 00:00:00 GMT"; //logout 
+  window.location.replace("taskkeeper_login.html");  
+}
+
+
+function startTime() {
+  var today = new Date();
+  var h = today.getHours();
+  var m = today.getMinutes();
+  var s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML = h + ":" + m + ":" + s;
+  var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+var stored1 = localStorage.getItem('Data');
+var storedVal = JSON.parse(stored1);
+var user = getCookie("email"); 
+console.log(user);
+function showprofile() {
+    var stored1 = localStorage.getItem('Data');
+    var storedVal = JSON.parse(stored1);
+    console.log(storedVal);
+    
+    // // var email = localStorage.getItem("email");
+    // var username = storedVal[0].name;
+    // var email = storedVal[0].email;
+    // var birthdate = storedVal[0].birthday;
+    // // var gender = storedVal[0].gender;
+    // var phonenumber = storedVal[0].mobile;
+    // // console.log(phonenumber);
+    // var password = storedVal[0].password;
+    // document.getElementById("email").value = email;
+    // document.getElementById("username").value = username;
+    // document.getElementById("birthday").value= birthdate;
+    // document.getElementById("phone").value = phonenumber;
+    // document.getElementById('pw').value = password;
+    
+
+    for (var i = 0; i < storedVal.length; i++)
+            {
+                if(user == storedVal[i].email)
+                {
+                    
+                    var email = storedVal[i].email;
+                    // var mobile = storedVal[i].mobile;
+                    var username = storedVal[i].name;
+                    var phonenumber = storedVal[i].mobile;
+                    var birthdate = storedVal[i].birthday;
+                    var password = storedVal[i].password;
+                    // var birthdate = storedVal[i].birthday;
+                    // console.log(email1);
+                    // console.log(mobile);
+                    // console.log(username);
+                    // console.log(birthdate);
+                    document.getElementById("email").value = email;
+                    document.getElementById("username").value = username;
+                    document.getElementById("birthday").value= birthdate;
+                    document.getElementById("phone").value = phonenumber;
+                    document.getElementById("pw").value = password;
+                }
+            }
+}
+
+
+function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function update()
+        {
+            for (var i = 0; i < storedVal.length; i++)
+            {
+                if(user == storedVal[i].email)
+                {
+
+                    console.log(storedVal);
+                    stored = new Array
+                    var name = document.getElementById('username').value;
+                    var mob = document.getElementById('phone').value;
+                    var em = document.getElementById('email').value;
+                    var pass = document.getElementById('pw').value;
+                    var birthdate = document.getElementById('birthday').value;
+                    storedVal[i].name=name;
+                    storedVal[i].email=em;
+                    storedVal[i].mobile=mob;
+                    storedVal[i].password=pass;
+                    storedVal[i].birthday=birthdate;
+                    
+
+                    stored=storedVal;
+                    localStorage.setItem('Data', JSON.stringify(stored));
+                    break;
+
+                }
+            }
+        }
+
+</script>
+</body>
+</html>

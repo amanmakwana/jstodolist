@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="taskkeeper.css">
+</head>
+<body>
+    <script src="taskkeeper_loginsignin.js"> </script> 
+    <div class="login">
+        <form name='form-login'>
+    
+            <h1>REGISTER</h1>
+    
+            <label for="name">Email</label>
+            <input type="email" id="email" placeholder="enter your email" required>
+
+            <label for="name">UserName</label>
+            <input type="name" id="username" placeholder="Username" required>
+
+            <label for="phone">mobile number:</label>
+            <input type="tel" id="phone" name="phonenumber" required maxlength="10">
+
+            <label for="birthday">Date Of Birth:</label>
+            <input type="date" id="birthday" name="birthday" required>
+
+            <label for="gender" class="gender">Gender:</label>
+            <select name="gender" id="gender" type="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+    
+            <label for="pw" class="password" >Password</label>
+            <input type="password" id= "pw"  placeholder="Password" required>
+        
+        
+            <input id="rgstr_btn" type="button" value="Register" onclick="store()">
+
+            <ul class="helper-text">
+                <li class="length">Must be at least 8 characters long.</li>
+                <li class="lowercase">Must contain a lowercase letter.</li>
+                <li class="uppercase">Must contain an uppercase letter.</li>
+                <li class="special">Must contain a number or special character.</li>
+            </ul>
+
+            <p>
+            Already have an account? <a href="taskkeeper_login.html">Log In</a>
+            </p>
+
+    
+    
+    
+        </form>
+    </div>
+</body>
+</html> 
+
+
+
+
+
+

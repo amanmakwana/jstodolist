@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="taskkeeper.css">
+  <link rel="stylesheet" href="styletaskkeeper.css">
+</head>
+<body onload="startTime(),getWeather()">
+
+  <div class="navbar">
+  <a class="active" href="taskkeeper_dashboard.html">Home</a> 
+  <a href="taskkeeper_profile.html">Profile</a>
+  <a id="txt"></a>
+  <div class="logout-right">
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+  </div>
+  <div id="whether">
+  <h1 style="color : black">Current Weather </h1>
+  <h2 id="temperature" style="color : black" ></h2>
+  <h2 id="description" style="color : black"></h2>
+  <p id="location" style="color : black"></p>
+  </div>
+  <iframe class="card" id="mygif"> </iframe>
+  <header class="bg-dark mb-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <nav class="navbar justify-content-between">
+            
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="todo-outer">
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <div class="col-sm-12 col-md-8">
+          <!-- <h1 style="background: black;">Welcome in Todo List Application</h1> -->
+          <div class="todo-inner">
+            <div class="form-row">
+              <div class="col-8 mr-sm-2">
+                <input type="text" class="form-control" placeholder="Enter your task" id="addtaskinput"/>
+                <input type="hidden" id="saveindex">
+              </div>
+              <button type="button" onclick="add()" class="btn btn-success mr-sm-2" id="addtaskbtn" style="display: inline-block;">
+                Add Task
+              </button>
+              <button type="button" class="btn btn-success mr-sm-2" id="savetaskbtn" onclick="save();" style="display: none;">
+                Save Task
+              </button>
+              <button type="button" id="deleteallbtn" class="btn btn-danger" onclick="deleteall();">
+                Delete All
+              </button>
+            </div>
+            <div class="to-do-output">
+              <table class="table table-striped mt-3 mb-0" id="addedtasklist" onclick="complete(event);">
+                
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- <script src="js/main.js"></script> -->
+
+
+
+</body>
+<script>
+  var user = getCookie("email");
+        if(document.cookie == null || document.cookie=='')
+        {
+            window.location.replace('login.html');
+        }
+function startTime() {
+  var today = new Date();
+  var h = today.getHours();
+  var m = today.getMinutes();
+  var s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML = h + ":" + m + ":" + s;
+  var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
+function getWeather() {
+            let temperature = document.getElementById("temperature");
+            let description = document.getElementById("description");
+            let location = document.getElementById("location");
+          
+            let api = "https://api.openweathermap.org/data/2.5/weather";
+            let apiKey = "7ba21c4b00c6b538ccfeeb4fb660bffc";
+          
+            location.innerHTML = "Locating...";
+          
+            navigator.geolocation.getCurrentPosition(success, error);
+          
+            function success(position) {
+              latitude = position.coords.latitude;
+              longitude = position.coords.longitude;
+          
+              let url =
+                api +
+                "?lat=" +
+                latitude +
+                "&lon=" +
+                longitude +
+                "&appid=" +
+                apiKey +
+                "&units=imperial";
+          
+              fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                  let temp = data.main.temp;
+                  temperature.innerHTML = temp + "° F";
+                  location.innerHTML =
+                    data.name + " (" + latitude + "°, " + longitude + "°)";
+                  description.innerHTML = data.weather[0].main;
+                });
+            }
+          
+            function error() {
+              location.innerHTML = "Unable to retrieve your location";
+            }
+          }
+
+          const gifapi = "jSEUpOFxNtOnevMHL7qoNN7kSBBcOcqu"
+function getGif() {
+    fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${gifapi}&limit=20`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            let i = 0
+            setInterval(() => {
+                if (i == 20) {
+                    i = 0
+                }
+                document.getElementById("mygif").src = data.data[i].embed_url;
+                i++;
+            }, 5000);
+        })
+}
+getGif()
+
+
+function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+          }
+
+
+showtask();
+function add()
+          {
+            console.log('hello');
+            var stored1 = localStorage.getItem('Data');
+        var storedVal = JSON.parse(stored1);
+        var user = getCookie("email");
+        let addtaskinput = document.getElementById("addtaskinput");
+        let addtaskbtn = document.getElementById("addtaskbtn");
+
+      addtaskbtn.addEventListener("click", function(){
+      console.log("hello");
+      addtaskinputval = addtaskinput.value;
+      if(addtaskinputval==null || addtaskinputval=='')
+      {
+        alert('pl. enter some task name');
+        window.location.replace('taskkeeper_dashboard.html');
+      }
+      else
+      {
+      for (var i = 0; i < storedVal.length; i++)
+      {
+        console.log('inside the max')
+        if(user == storedVal[i].email)
+        {
+          stored = new Array
+          f = storedVal[i].todo;
+          todo = {'task_name':addtaskinputval, 'completeStatus':false};
+          f.push(todo);
+          storedVal[i].todo = f;
+          stored=storedVal;
+          localStorage.setItem('Data', JSON.stringify(stored));
+          
+        }
+      }
+    showtask();
+    document.getElementById('addtaskbtn').innerHTML='';
+      }
+})
+}
+        showtask();
+
+// showtask
+function showtask(){
+  var stored1 = localStorage.getItem('Data');
+  var storedVal = JSON.parse(stored1);
+  for (var i = 0; i < storedVal.length; i++)
+            {
+                if(user == storedVal[i].email)
+                { 
+                  let html = '';
+                  let addedtasklist = document.getElementById("addedtasklist");
+                  for(j=0; j<=20;j++)
+                  {
+                    if(storedVal[i].todo[j].completeStatus==true){
+                      taskCompleteValue = `<td class="completed">${storedVal[i].todo[j].task_name}</td>`;
+                      // console.log(taskCompleteValue);
+                    }else{
+                      taskCompleteValue = `<td>${storedVal[i].todo[j].task_name}</td>`;
+                      // console.log(taskCompleteValue);
+                    }
+                    // let html = '';
+                    html += `<br><br><tr>
+                    <th class = index scope="row">${j+1} &nbsp;</th>
+                    ${taskCompleteValue}
+                    <td><button type="button" onclick="edittask(${j})" class="text-primary"><i class="fa fa-edit"></i>Edit</button></td>
+                    <td><button type="button" class="text-success" id=${j}><i class="fa fa-check-square-o"></i>Complete</button></td>
+                    <td><button type="button" onclick="deleteitem(${j})" class="text-danger"><i class="fa fa-trash"></i>Delete</button></td>
+                    </tr>`;
+                    addedtasklist.innerHTML = html; 
+                    
+                  }
+                
+                }
+                
+            }
+}
+
+// edittask
+function edittask(index){
+    let saveindex = document.getElementById("saveindex");
+    let addtaskbtn = document.getElementById("addtaskbtn");
+    let savetaskbtn = document.getElementById("savetaskbtn");
+    saveindex.value = index;
+    let webtask = localStorage.getItem("Data");
+    let taskObj = JSON.parse(webtask); 
+    
+    for (var i = 0; i < taskObj.length; i++)
+    {
+      if(user == taskObj[i].email)
+      { 
+        addtaskinput.value = taskObj[i].todo[index].task_name;
+        addtaskbtn.style.display="none";
+        savetaskbtn.style.display="block";
+      }
+    }
+    // addtaskinput.value = taskObj[index]['task_name'];
+    // addtaskbtn.style.display="none";
+    // savetaskbtn.style.display="block";
+}
+
+// savetask
+function save()
+{
+  
+  let savetaskbtn = document.getElementById("savetaskbtn");
+  let addtaskbtn = document.getElementById("addtaskbtn");
+    let webtask = localStorage.getItem("Data");
+    let taskObj = JSON.parse(webtask); 
+    let saveindex = document.getElementById("saveindex").value;
+    console.log(saveindex);
+    for (var i = 0; i < taskObj.length; i++)
+    {
+      if(user == taskObj[i].email)
+      { 
+        for (value in taskObj[i].todo) {
+          // console.log(value);
+          if(value == saveindex){
+            // console.log(value);
+            taskObj[i].todo[saveindex].task_name = addtaskinput.value;
+          }
+        }
+        savetaskbtn.style.display="none";
+        addtaskbtn.style.display="block";
+        localStorage.setItem("Data", JSON.stringify(taskObj));
+        addtaskinput.value='';
+        showtask();
+      }
+    }
+  }
+// deleteitem
+function deleteitem(index){
+    let webtask = localStorage.getItem("Data");
+    let taskObj = JSON.parse(webtask);
+    for (var i = 0; i < taskObj.length; i++)
+    {
+      if(user == taskObj[i].email)
+      { 
+        taskObj[i].todo.splice(index, 1);
+        localStorage.setItem("Data", JSON.stringify(taskObj));
+        window.location.replace('taskkeeper_dashboard.html');
+      }
+    }
+
+    showtask();
+}
+//complete task
+/* function completetask(index){
+    let webtask = localStorage.getItem("localtask");
+    let taskObj = JSON.parse(webtask);
+    taskObj[index] = '<span style="text-decoration:line-through">' + taskObj[index] + '</span>';
+    let addedtasklist = document.getElementById("addedtasklist");
+    addedtasklist.addEventListener("click", function(e){
+        console.log(addedtasklist)
+    })
+    localStorage.setItem("localtask", JSON.stringify(taskObj));
+    showtask();
+} */
+
+// complete task
+let addedtasklist = document.getElementById("addedtasklist");
+     function complete(e){
+       console.log('function called');
+       // console.log(e);
+        
+        // showtask();
+        let webtask = localStorage.getItem("Data");
+        let taskObj = JSON.parse(webtask);
+        
+        let mytarget = e.target;
+        if(mytarget.classList[0] === 'text-success'){
+        let mytargetid = mytarget.getAttribute("id");
+        console.log(mytargetid);
+        // let taskValue = taskObj[mytargetid]['task_name'];
+        
+        mytargetpresibling = mytarget.parentElement.previousElementSibling.previousElementSibling;
+        
+        for (var i = 0; i < taskObj.length; i++)
+        {
+          if(user == taskObj[i].email)
+          { 
+            if(taskObj[i].todo[mytargetid].completeStatus == false)
+            {
+              taskObj[i].todo[mytargetid].completeStatus= true;
+            }
+            else if(taskObj[i].todo[mytargetid].completeStatus== true)
+            {
+              taskObj[i].todo[mytargetid].completeStatus = false;
+            }
+          }
+        }
+        localStorage.setItem("Data", JSON.stringify(taskObj));
+        // window.location.replace('/dashboard.html');
+        showtask();     
+       
+    }
+    }
+
+    
+
+
+
+// deleteall
+let deleteallbtn = document.getElementById("deleteallbtn");
+function deleteall(){
+    let savetaskbtn = document.getElementById("savetaskbtn");
+    let addtaskbtn = document.getElementById("addtaskbtn");
+    let webtask = localStorage.getItem("Data");
+    let taskObj = JSON.parse(webtask);
+
+    for (var i = 0; i < taskObj.length; i++)
+    {
+      if(user == taskObj[i].email)
+      {
+        if(webtask == null){
+          taskObj[i].todo = [];
+        }
+        else{
+          taskObj = JSON.parse(webtask);
+          taskObj[i].todo = [];
+        }
+      }
+    }
+  
+    savetaskbtn.style.display="none";
+    addtaskbtn.style.display="block";
+    localStorage.setItem("Data", JSON.stringify(taskObj));
+    window.location.replace('taskkeeper_dashboard.html');
+    showtask();
+  }
+
+// // serachlist
+// let searchtextbox = document.getElementById("searchtextbox");
+// searchtextbox.addEventListener("input", function(){
+//     let trlist = document.querySelectorAll("tr");
+//     Array.from(trlist).forEach(function(item){
+//         let searchedtext = item.getElementsByTagName("td")[0].innerText;
+//         let searchtextboxval = searchtextbox.value;
+//         let re = new RegExp(searchtextboxval, 'gi');
+//         if(searchedtext.match(re)){
+//             item.style.display="table-row";
+//         }
+//         else{
+//             item.style.display="none";
+//         }
+//     })
+// })
+    
+function logout() {
+  document.cookie = "email=;expires=Thu, 01 Jan 1970 00:00:00 GMT"; //logout 
+  window.location.replace("taskkeeper_login.html");  
+}
+
+// function showprofile() {
+//     var email = localStorage.getItem("email");
+//     var username = localStorage.getItem("name");
+//     var birthdate = localStorage.getItem("birthdate");
+//     var gender = localStorage.getItem("gender");
+//     var phonenumber = localStorage.getItem("phonenumber");
+//     document.getElementById("email").innerHTML = email;
+//     document.getElementById("username").innerHTML = username;
+//     document.getElementById("birthdate").innerHTML = birthdate;
+//     document.getElementById("gender").innerHTML = gender;
+//     document.getElementById("phonenumber").innerHTML = phonenumber;
+// }
+
+</script>
+
+
+</html>

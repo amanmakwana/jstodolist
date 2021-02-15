@@ -1,0 +1,48 @@
+
+body{font-family: 'Roboto-Regular'; color: black;}
+section.todo-outer {
+    width: 100%;
+    float: left;
+    padding: 30px 0;
+}
+section.todo-outer h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+.todo-inner {
+    width: 100%;
+    padding: 40px;
+    box-shadow: 0px 0px 10px #fff;
+    text-align: center;
+    
+    
+}
+table tr td  {
+  cursor: pointer; 
+  border-radius: 1px;
+  font-size: 20px;
+}
+.index
+{
+  font-size: 25px;
+}
+button{
+  width: 100px;
+  padding: 10px;
+  margin-left: 70px;
+  background: #fff;
+  color:black;
+  border: solid 1px black;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all .38s ease-in-out;
+  font-size: 13px;
+}
+.completed{text-decoration: line-through;}
+input
+{
+  width: 50%;
+  border: solid 1px #eee;
+  padding: 15px 10px;
+  border-radius: 10px;
+}
